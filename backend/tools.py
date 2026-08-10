@@ -4,7 +4,7 @@ import re
 import ast
 import operator
 
-# Custom imports
+# Custom imports and dependencies
 from backend.rbac import validate_sql_query, get_rag_rbac_filter
 
 # Paths
