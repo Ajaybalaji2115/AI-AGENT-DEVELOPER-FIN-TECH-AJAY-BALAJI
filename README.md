@@ -1,12 +1,12 @@
 <div align="center">
-  <h1>🍏 SphereFinance</h1>
+  <h1>🤖 Ajay Agentic AI</h1>
   <p><b>Agentic AI Intelligence, Forged for Apple Inc. Financials</b></p>
   <p><i>Zero-Leakage Security • Deterministic Math • Deep Semantic Understanding</i></p>
 </div>
 
 <br/>
 
-SphereFinance isn't just a chatbot—it is a **multi-tool autonomous agent** built from the ground up to query, calculate, and analyze Apple Inc.'s most sensitive financial data. It bridges the gap between unstructured PDF narratives and rigid Excel spreadsheets, all while being guarded by a mathematically strict security matrix.
+Ajay Agentic AI isn't just a chatbot—it is a **multi-tool autonomous agent** built from the ground up to query, calculate, and analyze Apple Inc.'s most sensitive financial data. It bridges the gap between unstructured PDF narratives and rigid Excel spreadsheets, all while being guarded by a mathematically strict security matrix.
 
 ---
 
@@ -20,7 +20,7 @@ SphereFinance isn't just a chatbot—it is a **multi-tool autonomous agent** bui
 
 ## 🛤️ The Journey of a Prompt
 
-When you ask SphereFinance a question, it doesn't just guess an answer. It goes through a rigorous gauntlet:
+When you ask Ajay Agentic AI a question, it doesn't just guess an answer. It goes through a rigorous gauntlet:
 
 1. 🚨 **The Interceptor (Pre-Query Guard):** Scans the raw English text. If a junior employee asks about restricted topics, the query dies here.
 2. 🧰 **The Armory (Tool Selection):** The agent decides whether it needs the `SQL Tool` (for exact numbers), the `RAG Tool` (for reading PDFs), or the `Calculator Tool` (for ratios).
@@ -55,7 +55,7 @@ Security isn't a suggestion; it's hardcoded at the database layer.
 
 ---
 
-## 🚀 Liftoff: Running SphereFinance Locally
+## 🚀 Liftoff: Running Ajay Agentic AI Locally
 
 Want to spin up the agent on your own machine? Follow these exact steps:
 
@@ -86,7 +86,7 @@ Fire up the backend Flask server:
 ```bash
 python -m backend.app
 ```
-🎉 **Success!** Open your browser and navigate to **[http://127.0.0.1:5000](http://127.0.0.1:5000)** to interact with SphereFinance.
+🎉 **Success!** Open your browser and navigate to **[http://127.0.0.1:5000](http://127.0.0.1:5000)** to interact with Ajay Agentic AI.
 
 ---
 
