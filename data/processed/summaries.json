@@ -1,0 +1,58 @@
+{
+  "apple_10k_2024.pdf": {
+    "title": "Apple Inc. FY2024 Form 10-K Annual Report",
+    "period": "Fiscal Year Ended September 28, 2024",
+    "description": "Apple's annual report detailing business performance, risk factors, and financial results. Shows robust revenue growth driven by services, while product revenues remained steady. R&D investments reached record highs.",
+    "key_metrics": {
+      "Total Net Sales (Revenue)": "$391,035M",
+      "Gross Margin": "$181,262M (46.35%)",
+      "Net Income": "$93,736M",
+      "Diluted EPS": "$6.08",
+      "Headcount": "164,000 employees"
+    }
+  },
+  "apple_10k_2023.pdf": {
+    "title": "Apple Inc. FY2023 Form 10-K Annual Report",
+    "period": "Fiscal Year Ended September 30, 2023",
+    "description": "Apple's annual report detailing a year of high net income and expansion in hardware and software ecosystems. Service revenues grew, offsetting minor declines in hardware sales.",
+    "key_metrics": {
+      "Total Net Sales (Revenue)": "$383,285M",
+      "Gross Margin": "$169,148M (44.13%)",
+      "Net Income": "$96,995M",
+      "Diluted EPS": "$6.13",
+      "Headcount": "161,000 employees"
+    }
+  },
+  "apple_10k_2022.pdf": {
+    "title": "Apple Inc. FY2022 Form 10-K Annual Report",
+    "period": "Fiscal Year Ended September 24, 2022",
+    "description": "Apple's annual report showing strong performance in smartphone sales, post-pandemic demand stability, and sustained global logistics optimizations.",
+    "key_metrics": {
+      "Total Net Sales (Revenue)": "$394,328M",
+      "Gross Margin": "$170,782M (43.31%)",
+      "Net Income": "$99,803M",
+      "Diluted EPS": "$6.11",
+      "Headcount": "164,000 employees"
+    }
+  },
+  "apple_financials_2022_2024.xlsx": {
+    "title": "Apple Financial & Operational Spreadsheets",
+    "period": "FY 2022 - FY 2024 Summary",
+    "description": "Contains sheets: 'Income Statement' and 'Operations & Headcount'. Tracks detailed sales summaries, operating margins, EPS, retail stores count, and headcount.",
+    "key_metrics": {
+      "Data Sheets Included": "Income Statement, Operations & Headcount",
+      "FY24 Store Count": "535 stores",
+      "FY24 Revenue per Employee": "$2,384,359.76"
+    }
+  },
+  "synthetic_hr_compensation.xlsx": {
+    "title": "[CONFIDENTIAL] Synthetic Executive Payroll & Compensation Sheet",
+    "period": "FY 2024 Payroll Logs",
+    "description": "RESTRICTED DOCUMENT (Synthetic demonstration data). Lists salaries, stock awards, and total compensation for top-tier executives.",
+    "key_metrics": {
+      "CEO Tim Cook FY24 Total Compensation": "$60,300,000",
+      "CFO Luca Maestri FY24 Total Compensation": "$20,200,000",
+      "Access Classification": "CONFIDENTIAL_HR (CEO Only)"
+    }
+  }
+}

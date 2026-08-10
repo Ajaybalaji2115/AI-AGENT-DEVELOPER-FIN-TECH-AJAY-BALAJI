@@ -1,0 +1,32 @@
+{
+  "apple_10k_2024.pdf": {
+    "doc_type": "pdf",
+    "company": "Apple",
+    "year": 2024,
+    "classification": "PUBLIC"
+  },
+  "apple_10k_2023.pdf": {
+    "doc_type": "pdf",
+    "company": "Apple",
+    "year": 2023,
+    "classification": "PUBLIC"
+  },
+  "apple_10k_2022.pdf": {
+    "doc_type": "pdf",
+    "company": "Apple",
+    "year": 2022,
+    "classification": "PUBLIC"
+  },
+  "apple_financials_2022_2024.xlsx": {
+    "doc_type": "xlsx",
+    "company": "Apple",
+    "year": "2022-2024",
+    "classification": "PUBLIC"
+  },
+  "synthetic_hr_compensation.xlsx": {
+    "doc_type": "xlsx",
+    "company": "Apple",
+    "year": 2024,
+    "classification": "CONFIDENTIAL_HR"
+  }
+}

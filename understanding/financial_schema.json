@@ -1,0 +1,32 @@
+{
+  "financials": {
+    "description": "Structured Income Statement data for Apple Inc. (FY 22 - FY 24). Values are in Millions of USD, except Diluted EPS.",
+    "columns": {
+      "metric": "TEXT - Name of financial metric",
+      "fy2024": "REAL - Value for fiscal year 2024",
+      "fy2023": "REAL - Value for fiscal year 2023",
+      "fy2022": "REAL - Value for fiscal year 2022"
+    }
+  },
+  "operations": {
+    "description": "Structured operational statistics (Retail stores count, total employees).",
+    "columns": {
+      "metric": "TEXT - Name of operational metric",
+      "fy2024": "REAL - Value for fiscal year 2024",
+      "fy2023": "REAL - Value for fiscal year 2023",
+      "fy2022": "REAL - Value for fiscal year 2022"
+    }
+  },
+  "synthetic_hr_compensation": {
+    "description": "RESTRICTED executive payroll records (Synthetic dataset for RBAC demonstration). Role CEO required.",
+    "columns": {
+      "name": "TEXT - Executive name",
+      "role": "TEXT - VP/Officer role",
+      "base_salary": "REAL - Annual salary in USD",
+      "stock_awards": "REAL - Granted stock rewards in USD",
+      "incentive_comp": "REAL - Performance incentive bonus in USD",
+      "other_comp": "REAL - Other secondary compensation in USD",
+      "total_comp": "REAL - Combined total annual compensation in USD"
+    }
+  }
+}

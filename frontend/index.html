@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ajay Agentic AI - Financial Assistant</title>
+    <meta name="description" content="Ajay Agentic AI — AI-powered financial intelligence for Apple Inc. 10-K filings with role-based access control.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Auth guard: handled in app.js before DOM renders -->
+    <div class="app-container" id="app-container" style="display:none;">
+        
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-logo">
+                <span class="logo-icon">▲</span>
+                <h1>Ajay Agentic <span>AI Assistant</span></h1>
+            </div>
+            <div class="header-center">
+                <div class="status-indicator">
+                    <span class="indicator-dot pulse" id="api-status-dot"></span>
+                    <span id="api-status-text">Connecting...</span>
+                </div>
+            </div>
+            <div class="header-user" id="header-user">
+                <!-- Filled by JS -->
+            </div>
+        </header>
+
+        <div class="app-body">
+            
+            <!-- Left Panel: Role Info & File Inventory -->
+            <aside class="sidebar-left">
+                <div class="panel-card role-card">
+                    <h2>Active Session</h2>
+                    <p class="section-desc">Your role and RBAC permissions are assigned based on your authenticated email address.</p>
+                    
+                    <div id="session-role-display" class="session-role-box">
+                        <!-- Filled by JS -->
+                    </div>
+                </div>
+
+                <div class="panel-card file-card">
+                    <div class="card-header-row">
+                        <h2>Data Sources Catalog</h2>
+                        <button class="btn-small" id="btn-reingest" title="Re-ingest all files">Re-Ingest</button>
+                    </div>
+                    <p class="section-desc">Loaded files and metadata tags enforced by security guard rails.</p>
+                    
+                    <ul class="file-list" id="file-catalog-list">
+                        <!-- Loaded dynamically -->
+                        <div class="loading-placeholder">Loading file list...</div>
+                    </ul>
+                </div>
+            </aside>
+
+            <!-- Main Panel: Chat Interface -->
+            <main class="chat-container">
+                <div class="chat-history" id="chat-messages">
+                    <div class="message system">
+                        <div class="message-bubble">
+                            Welcome! I am your AI financial assistant for Apple Inc. Ask me anything about Apple's 10-K performance (2022–2025) or operational data.<br/><br/>
+                            <strong>Try asking:</strong>
+                            <div class="suggestion-chips">
+                                <span class="chip">What was Apple's revenue in 2024?</span>
+                                <span class="chip">What was the gross margin in 2023?</span>
+                                <span class="chip">Why did revenue change in 2025?</span>
+                                <span class="chip">What was Apple's total executive compensation?</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="chat-toolbar">
+                    <div class="toolbar-left">
+                        <span class="toolbar-label">Quick Compare:</span>
+                        <button class="btn-chip" data-query="Compare Apple revenue, gross margin and net income across 2022, 2023, 2024 and 2025">2022–2025 Overview</button>
+                        <button class="btn-chip" data-query="Compare Apple gross margin percentage in 2024 vs 2025">2024 vs 2025</button>
+                        <button class="btn-chip" data-query="What was Apple revenue growth from 2023 to 2024 and why?">Revenue Growth</button>
+                        <button class="btn-chip" data-query="Summarize Apple key financial highlights for 2025">2025 Highlights</button>
+                    </div>
+                    <button class="btn-export" id="btn-export-pdf" title="Export last answer as PDF">⬇ Export PDF</button>
+                </div>
+                <div class="chat-input-area">
+                    <form id="chat-form">
+                        <input type="text" id="query-input" placeholder="Ask a financial question (e.g. 'Compare Apple revenue 2022 to 2025')..." required autocomplete="off">
+                        <button type="submit" class="btn-send">
+                            <svg viewBox="0 0 24 24" width="20" height="20">
+                                <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" fill="currentColor"></path>
+                            </svg>
+                        </button>
+                    </form>
+                </div>
+            </main>
+
+            <!-- Right Panel: Data Layer Security Guard Audit -->
+            <aside class="sidebar-right">
+                <div class="panel-card audit-card">
+                    <div class="card-header-row">
+                        <h2>Security Guard Inspector</h2>
+                        <span class="badge" id="audit-badge">Idle</span>
+                    </div>
+                    <p class="section-desc">Real-time data-layer auditing. Inspects retrieved DB chunks and logs block actions before the AI generates answers.</p>
+                    
+                    <div class="audit-console" id="audit-log-console">
+                        <div class="console-empty">
+                            No queries executed yet. Submit a message to trace data access.
+                        </div>
+                    </div>
+                </div>
+            </aside>
+
+        </div>
+    </div>
+
+    <!-- Correction Feedback Modal -->
+    <div class="modal-overlay" id="correction-modal">
+        <div class="modal-content">
+            <h3>Submit Answer Correction</h3>
+            <p>Tell the AI how it should have answered this question. Future answers will learn from this rule.</p>
+            <textarea id="correction-text" placeholder="Example: For 2024 Gross Margin, print the percentage (46.35%) and the dollar value ($181,262 million)..." rows="4"></textarea>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" id="modal-cancel">Cancel</button>
+                <button class="btn btn-primary" id="modal-submit">Submit Correction</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- JavaScript Application Logic -->
+    <script src="app.js"></script>
+</body>
+</html>
