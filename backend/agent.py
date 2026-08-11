@@ -7,6 +7,9 @@ from dotenv import load_dotenv
 from backend.tools import sql_tool, rag_tool, calculator_tool
 from backend.rbac import check_indirect_access_in_query, get_allowed_classifications
 from backend.feedback_loop import get_relevant_correction
+import logging
+
+logger = logging.getLogger(__name__)
 
 load_dotenv()
 
@@ -39,7 +42,7 @@ def run_rule_based_fallback_planner(query, user_role):
     Simulates the agent tool-selection behavior when no API key is available.
     Broad keyword matching + always falls back to RAG for unrecognised queries.
     """
-    print("[Agent] Running in Offline Demo Fallback mode")
+    logger.info("Running in Offline Demo Fallback mode")
     q = query.lower()
     tool_calls = []
     sql_added = False
@@ -351,7 +354,7 @@ def query_financial_assistant(query, user_role):
                 "feedback_matched": False
             }
             
-        print(f"Error in Gemini Agent logic: {e}. Falling back to offline simulator...")
+        logger.error(f"Error in Gemini Agent logic: {e}. Falling back to offline simulator...", exc_info=True)
         res = run_rule_based_fallback_planner(query, user_role)
         if correction_inst:
             res["answer"] += f"\n\n*[Applied Correction Memory]: {correction_inst}*"

@@ -11,6 +11,14 @@ if hasattr(sys.stderr, 'reconfigure'):
 
 from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
+import logging
+
+# Configure structured logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+)
+logger = logging.getLogger(__name__)
 
 
 # Import our backend modules
@@ -49,6 +57,7 @@ def handle_query():
         response = query_financial_assistant(query, role)
         return jsonify(response)
     except Exception as e:
+        logger.error(f"Error handling query: {str(e)}", exc_info=True)
         return jsonify({"error": str(e)}), 500
 
 @app.route('/api/feedback', methods=['POST'])
@@ -65,6 +74,7 @@ def handle_feedback():
         add_feedback(query, rating, correction if correction else None)
         return jsonify({"status": "success", "message": "Feedback submitted successfully"})
     except Exception as e:
+        logger.error(f"Error handling feedback: {str(e)}", exc_info=True)
         return jsonify({"error": str(e)}), 500
 
 @app.route('/api/status', methods=['GET'])
@@ -164,5 +174,5 @@ if __name__ == "__main__":
     os.makedirs(os.path.join("data", "processed"), exist_ok=True)
     os.makedirs(os.path.join("data", "feedback"), exist_ok=True)
     
-    print("Starting Financial Agent Server...")
+    logger.info("Starting Financial Agent Server...")
     app.run(host="127.0.0.1", port=5000, debug=True)

@@ -229,6 +229,7 @@ async function fetchSystemStatus() {
         apiStatusDot.style.backgroundColor = "#ef4444"; // Red
         apiStatusText.textContent = "Offline (Connection Error)";
         console.error("Error fetching system status:", error);
+        fileCatalogList.innerHTML = `<div class="loading-placeholder" style="color: #ef4444;">Could not connect to backend server. Please ensure the server is running.</div>`;
     }
 }
 
@@ -297,7 +298,7 @@ async function submitQuery(query) {
         
     } catch (error) {
         removeLoadingMessage(loadingId);
-        appendMessage("Sorry, I encountered an internal backend connection error while processing your request.", "assistant");
+        appendSystemMessage(`<span style="color: #ef4444; font-weight: bold;">⚠️ Connection Error</span><br/>Sorry, I encountered an internal backend error while processing your request. Please ensure the server is online and try again. <br/><small>${error.message}</small>`);
         console.error("Query submit error:", error);
     }
 }
@@ -357,7 +358,8 @@ async function triggerReingestion() {
     } catch (error) {
         reingestBtn.disabled = false;
         reingestBtn.textContent = "Re-Ingest";
-        appendSystemMessage("Error: Failed to trigger data re-ingestion.");
+        appendSystemMessage(`<span style="color: #ef4444; font-weight: bold;">⚠️ Error</span><br/>Failed to trigger data re-ingestion. Ensure the backend server is running.`);
+        console.error("Ingestion trigger error:", error);
     }
 }
 
@@ -459,8 +461,11 @@ async function sendRating(query, rating) {
         
         if (response.ok) {
             appendSystemMessage("Thank you for your rating! Feedback saved to database.");
+        } else {
+            throw new Error("Failed to submit feedback");
         }
     } catch (e) {
+        appendSystemMessage(`<span style="color: #ef4444;">⚠️ Failed to submit rating. Network error.</span>`);
         console.error("Feedback submit error:", e);
     }
 }
@@ -491,8 +496,11 @@ async function submitCorrection() {
             correctionText.value = "";
             appendSystemMessage(`<strong>Correction Saved!</strong> The assistant has cataloged the correction rules. It will apply these rules to future queries.`);
             fetchSystemStatus();
+        } else {
+            throw new Error("Failed to save correction");
         }
     } catch (e) {
+        appendSystemMessage(`<span style="color: #ef4444;">⚠️ Failed to submit correction. Please check connection.</span>`);
         console.error("Error submitting correction:", e);
     }
 }
