@@ -335,6 +335,22 @@ def query_financial_assistant(query, user_role):
         }
         
     except Exception as e:
+        error_str = str(e)
+        if "429" in error_str or "Quota" in error_str or "RESOURCE_EXHAUSTED" in error_str:
+            ans = (
+                "⚠️ **Google API Rate Limit Exceeded** ⚠️\n\n"
+                "Because you are using the Free Tier of the Gemini API, we are only allowed a few requests per minute. "
+                "Please wait about 60 seconds and try your question again!\n\n"
+                "(The system blocked the request instead of giving you an ugly fallback answer)."
+            )
+            return {
+                "answer": ans,
+                "sources": [],
+                "audit_log": [],
+                "is_fallback": False,
+                "feedback_matched": False
+            }
+            
         print(f"Error in Gemini Agent logic: {e}. Falling back to offline simulator...")
         res = run_rule_based_fallback_planner(query, user_role)
         if correction_inst:

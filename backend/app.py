@@ -17,7 +17,7 @@ from flask_cors import CORS
 from backend.agent import query_financial_assistant
 from backend.feedback_loop import add_feedback, load_feedback
 from backend.ingestion import ingest_all_raw_files
-from backend.setup_sqlite import setup_database
+from backend.setup_mysql import setup_database
 from backend.understanding import run_understanding_pipeline
 
 # Initialize Flask app
@@ -105,12 +105,26 @@ def handle_status():
     # Check if LLM API key configured
     api_key_configured = bool(os.getenv("GEMINI_API_KEY"))
     
+    import pymysql
+    try:
+        conn = pymysql.connect(
+            host=os.getenv("MYSQL_HOST", "localhost"),
+            user=os.getenv("MYSQL_USER", "root"),
+            password=os.getenv("MYSQL_PASSWORD", ""),
+            database=os.getenv("MYSQL_DATABASE", "finagent_db")
+        )
+        conn.close()
+        mysql_connected = True
+    except:
+        mysql_connected = False
+        
     return jsonify({
         "files": raw_files,
         "summaries": summaries,
         "feedback_count": len(feedbacks),
         "vector_db_initialized": db_exists,
         "api_key_configured": api_key_configured,
+        "mysql_connected": mysql_connected,
         "ingestion_state": ingestion_status
     })
 

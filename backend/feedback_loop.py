@@ -1,9 +1,9 @@
+import pymysql
 import os
-import sqlite3
 import numpy as np
 from datetime import datetime
 
-DB_PATH = os.path.join("data", "processed", "financials.db")
+# DB_PATH is no longer used for MySQL
 _model_cache = None
 
 def get_embed_model():
@@ -15,16 +15,19 @@ def get_embed_model():
     return _model_cache
 
 def load_feedback_from_db():
-    """Retrieves all feedback rows from the SQLite database."""
-    if not os.path.exists(DB_PATH):
-        return []
-    
+    """Retrieves all feedback rows from the MySQL database."""
     feedbacks = []
     try:
-        conn = sqlite3.connect(DB_PATH)
+        conn = pymysql.connect(
+            host=os.getenv("MYSQL_HOST", "localhost"),
+            user=os.getenv("MYSQL_USER", "root"),
+            password=os.getenv("MYSQL_PASSWORD", ""),
+            database=os.getenv("MYSQL_DATABASE", "finagent_db")
+        )
         cursor = conn.cursor()
+        
         # Verify table exists
-        cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='feedback'")
+        cursor.execute("SHOW TABLES LIKE 'feedback'")
         if not cursor.fetchone():
             conn.close()
             return []
@@ -40,44 +43,46 @@ def load_feedback_from_db():
             })
         conn.close()
     except Exception as e:
-        print(f"Error loading feedback from SQLite: {e}")
+        print(f"Error loading feedback from MySQL: {e}")
     return feedbacks
 
 def add_feedback(query, rating, correction=None):
     """
-    Saves user feedback to the SQLite 'feedback' table.
+    Saves user feedback to the MySQL 'feedback' table.
     """
-    if not os.path.exists(DB_PATH):
-        os.makedirs(os.path.dirname(DB_PATH), exist_ok=True)
-        
     try:
-        conn = sqlite3.connect(DB_PATH)
+        conn = pymysql.connect(
+            host=os.getenv("MYSQL_HOST", "localhost"),
+            user=os.getenv("MYSQL_USER", "root"),
+            password=os.getenv("MYSQL_PASSWORD", ""),
+            database=os.getenv("MYSQL_DATABASE", "finagent_db")
+        )
         cursor = conn.cursor()
         
         # Ensure feedback table is created
         cursor.execute("""
             CREATE TABLE IF NOT EXISTS feedback (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                query TEXT UNIQUE,
-                rating TEXT,
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                query VARCHAR(500) UNIQUE,
+                rating VARCHAR(50),
                 correction TEXT,
-                timestamp TEXT
+                timestamp VARCHAR(100)
             )
         """)
         
         timestamp = datetime.utcnow().isoformat() + "Z"
         
-        # Use INSERT OR REPLACE to overwrite feedback for the same query
+        # Use REPLACE INTO for MySQL
         cursor.execute("""
-            INSERT OR REPLACE INTO feedback (query, rating, correction, timestamp)
-            VALUES (?, ?, ?, ?)
+            REPLACE INTO feedback (query, rating, correction, timestamp)
+            VALUES (%s, %s, %s, %s)
         """, (query, rating, correction, timestamp))
         
         conn.commit()
         conn.close()
         print(f"[Feedback Saved to SQL]: Query: '{query}' (Rating: {rating}, Correction: {correction})")
     except Exception as e:
-        print(f"Error saving feedback to SQLite: {e}")
+        print(f"Error saving feedback to MySQL: {e}")
 
 def get_relevant_correction(query, threshold=0.75):
     """

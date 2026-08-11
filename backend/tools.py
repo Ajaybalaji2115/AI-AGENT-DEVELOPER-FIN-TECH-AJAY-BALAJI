@@ -1,5 +1,5 @@
+import pymysql
 import os
-import sqlite3
 import re
 import ast
 import operator
@@ -8,7 +8,7 @@ import operator
 from backend.rbac import validate_sql_query, get_rag_rbac_filter
 
 # Paths
-DB_PATH = os.path.join("data", "processed", "financials.db")
+# DB connection variables are loaded from the environment later
 CHROMA_DB_PATH = os.path.join("data", "processed", "chroma_db")
 
 # Global instances
@@ -50,13 +50,13 @@ def sql_tool(sql_query, user_role):
         return f"[SECURITY BLOCK] {str(e)}"
         
     # 2. Open DB in read-only mode if possible, execute SELECT
-    if not os.path.exists(DB_PATH):
-        return "[Error] financials.db not found. Trigger ingestion first."
-        
     try:
-        # SQLite read-only connection can be simulated by opening database 
-        # and checking that modifying statements are caught by our guard.
-        conn = sqlite3.connect(DB_PATH)
+        conn = pymysql.connect(
+            host=os.getenv("MYSQL_HOST", "localhost"),
+            user=os.getenv("MYSQL_USER", "root"),
+            password=os.getenv("MYSQL_PASSWORD", ""),
+            database=os.getenv("MYSQL_DATABASE", "finagent_db")
+        )
         cursor = conn.cursor()
         cursor.execute(sql_query)
         description = cursor.description
@@ -80,7 +80,7 @@ def sql_tool(sql_query, user_role):
         return "\n".join(result)
         
     except Exception as e:
-        return f"[SQLite SQL Error] Failed to execute query: {e}"
+        return f"[MySQL SQL Error] Failed to execute query: {e}"
 
 # ==========================================
 # TOOL 2: RAG TOOL
