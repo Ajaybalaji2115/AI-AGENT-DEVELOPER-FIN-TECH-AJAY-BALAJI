@@ -2,6 +2,7 @@ const API_BASE = ""; // Relative paths since Flask serves the frontend
 let currentRole = "Analyst"; // Default; overridden by session
 let lastQueryMatched = "";
 let lastAnswerData = null; // Stores the last AI response for PDF export
+let chatHistory = []; // Stores the conversation history for follow-up context
 
 // ─── AUTH GUARD ───────────────────────────────────────────────────────────────
 // Reads sessionStorage to get the role assigned at login.
@@ -276,7 +277,7 @@ async function submitQuery(query) {
         const response = await fetch(`${API_BASE}/api/query`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ query: query, role: currentRole })
+            body: JSON.stringify({ query: query, role: currentRole, history: chatHistory })
         });
         
         if (!response.ok) throw new Error("Query execution failed");
@@ -292,6 +293,10 @@ async function submitQuery(query) {
             role: currentRole,
             timestamp: new Date().toLocaleString()
         };
+
+        // Append to memory buffer
+        chatHistory.push({ role: "user", content: query });
+        chatHistory.push({ role: "assistant", content: data.answer });
 
         appendMessage(data.answer, "assistant", data.sources, query);
         renderAuditLogs(data.audit_log, data.is_fallback);

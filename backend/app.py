@@ -49,12 +49,13 @@ def handle_query():
     data = request.get_json() or {}
     query = data.get("query", "").strip()
     role = data.get("role", "Analyst").strip()
+    history = data.get("history", [])
     
     if not query:
         return jsonify({"error": "Query parameter is required"}), 400
         
     try:
-        response = query_financial_assistant(query, role)
+        response = query_financial_assistant(query, role, history)
         return jsonify(response)
     except Exception as e:
         logger.error(f"Error handling query: {str(e)}", exc_info=True)
