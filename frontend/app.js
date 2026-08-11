@@ -496,3 +496,5 @@ async function submitCorrection() {
         console.error("Error submitting correction:", e);
     }
 }
+
+/* Application initialization and event handling logic */
