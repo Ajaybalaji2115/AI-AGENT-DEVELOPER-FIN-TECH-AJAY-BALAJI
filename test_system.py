@@ -143,3 +143,5 @@ def run_test_suite():
 
 if __name__ == "__main__":
     run_test_suite()
+
+# System integration tests for validating end-to-end functionality
