@@ -60,17 +60,26 @@ Security isn't a suggestion; it's hardcoded at the database layer.
 Want to spin up the agent on your own machine? Follow these exact steps:
 
 ### Step 1: Gear Up (Dependencies)
-Make sure you have Python installed, then grab the required libraries:
+Make sure you have Python and Node.js installed, then grab the required libraries:
 ```bash
+# Backend dependencies
 pip install Flask flask-cors pandas openpyxl pdfplumber requests sentence-transformers chromadb reportlab python-dotenv
+
+# Frontend dependencies
+cd frontend-react
+npm install
 ```
 
 ### Step 2: The Keys to the Kingdom (Configuration)
-Create a `.env` file in the root folder. Paste your Gemini API key inside:
+Create a `.env` file in the root folder and add your database configuration:
 ```ini
-GEMINI_API_KEY=your_super_secret_google_key_here
+DB_ENGINE=mysql
+MYSQL_HOST=localhost
+MYSQL_PORT=3306
+MYSQL_USER=root
+MYSQL_PASSWORD=your_password
+MYSQL_DATABASE=finagent_db
 ```
-*(No key? No problem. The system will automatically fall back to an offline Agent Simulation mode!)*
 
 ### Step 3: Feed the Machine (Ingestion)
 We need to parse the raw PDFs and Excel files into our vector and SQL databases. Run these sequentially:
@@ -82,11 +91,52 @@ python backend/understanding.py
 ```
 
 ### Step 4: Awaken the Agent (Server Start)
-Fire up the backend Flask server:
+Fire up both the backend and frontend servers:
+
+**Terminal 1 (Backend):**
 ```bash
 python -m backend.app
 ```
-🎉 **Success!** Open your browser and navigate to **[http://127.0.0.1:5000](http://127.0.0.1:5000)** to interact with Ajay Agentic AI.
+
+**Terminal 2 (Frontend):**
+```bash
+cd frontend-react
+npm run dev
+```
+🎉 **Success!** Open your browser and navigate to the frontend URL (typically **[http://localhost:5173](http://localhost:5173)**) to interact with Ajay Agentic AI.
+
+---
+
+## 🏛️ System Architecture
+
+Ajay Agentic AI follows a strict, modular architecture designed for security and intelligence:
+- **Frontend Layer (React/Vite):** A dynamic, responsive interface offering interactive learning and secure access panels.
+- **API & Routing (Flask):** The backend serves as the orchestration layer, connecting the user with the agentic loop.
+- **Agentic Engine:** At the core lies a routing mechanism that decides whether to query unstructured data (RAG via ChromaDB), structured data (SQL), or perform deterministic computations.
+- **Security & Data Layer (MySQL/SQLite + Vector DB):** Data access is strictly controlled via Role-Based Access Control (RBAC). Data retrieval is segregated so that sensitive documents are mathematically invisible to unauthorized roles.
+
+---
+
+## ✨ Creativity & Unique Innovations
+
+1. **Deterministic AI Math:** Instead of relying on LLMs to perform arithmetic (which they frequently hallucinate), the system translates natural language queries into an Abstract Syntax Tree (AST) to compute verifiable mathematical answers natively in Python.
+2. **Zero-Leakage Security Matrix:** Security isn't just an app-layer afterthought. Our system employs database-level guards and pre-query interceptors that proactively neutralize requests for restricted data before they ever hit the semantic engine.
+3. **Continuous Feedback Loop:** The AI possesses an evolving memory. User corrections and domain-specific terminology are ingested, persisted, and injected into the agent's context, making it smarter with every interaction.
+
+---
+
+## 📈 Scaling to 100x & Solutions
+
+**What happens if we scale to 100x?**
+- **Vector Database Bottlenecks:** Local ChromaDB and SQLite might struggle with massive concurrent I/O operations and vector similarity searches across millions of chunks.
+- **LLM API Rate Limits:** Relying on a single API key or local models can quickly exhaust rate limits or compute capacity when subjected to high-throughput requests.
+- **Compute Overhead:** Performing AST evaluations and semantic understanding on large datasets simultaneously for thousands of users will spike CPU utilization, slowing response times.
+
+**Solutions to Overcome:**
+1. **Distributed Databases:** Migrate from SQLite/local ChromaDB to managed cloud vector stores (like Pinecone or Milvus) and scalable relational databases (like PostgreSQL on Amazon RDS).
+2. **Load Balancing & Microservices:** Decouple the monolithic Flask backend into distinct microservices (Agent Routing, Query Execution, Document Ingestion). Use Kubernetes to auto-scale individual components based on traffic.
+3. **Caching Layers:** Implement Redis or Memcached to store frequent query results, drastically reducing vector lookups and LLM calls for common questions like "What was Apple's Q3 revenue?".
+4. **Model Pooling:** Implement round-robin routing across multiple LLM endpoints or deploy optimized open-source models (like Llama 3) via vLLM for high-throughput localized inference.
 
 ---
 
