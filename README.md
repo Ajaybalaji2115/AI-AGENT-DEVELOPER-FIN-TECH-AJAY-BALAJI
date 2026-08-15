@@ -119,11 +119,75 @@ Ajay Agentic AI follows a strict, modular architecture designed for security and
 
 ## ✨ Creativity & Unique Innovations
 
+### Core Innovations
+
 1. **Deterministic AI Math:** Instead of relying on LLMs to perform arithmetic (which they frequently hallucinate), the system translates natural language queries into an Abstract Syntax Tree (AST) to compute verifiable mathematical answers natively in Python.
 2. **Zero-Leakage Security Matrix:** Security isn't just an app-layer afterthought. Our system employs database-level guards and pre-query interceptors that proactively neutralize requests for restricted data before they ever hit the semantic engine.
 3. **Continuous Feedback Loop:** The AI possesses an evolving memory. User corrections and domain-specific terminology are ingested, persisted, and injected into the agent's context, making it smarter with every interaction.
 
 ---
+
+## 🌟 Advanced Financial Capabilities (3 Separate Pages)
+
+These three enterprise-grade capabilities go far beyond a standard RAG chatbot. They are divided into three dedicated pages in the sidebar to provide clean, task-oriented interfaces.
+
+---
+
+### 🔍 Page 1 — Trust & Trace: Citation-Level Evidence (`/trace`)
+
+**The Problem:** In finance, an AI answer is worthless if it can't be verified. Hallucinations are catastrophic in a regulated environment.
+
+**The Solution:** A split-screen citation viewer. When a user submits any financial question, the system searches the vector database and returns the **exact document chunks** retrieved, showing:
+- 📄 **Source file name** and **page number** from the actual 10-K PDF
+- 📊 **Relevance score** (cosine similarity) for each citation
+- 🔬 **Raw excerpt** — the unmodified text from the original document
+- 🔒 **Access classification** showing the RBAC tier of each retrieved chunk
+
+**Why It Matters:** Users can click any citation `[1]`, `[2]`, `[3]` and inspect the ground-truth source that produced the AI's answer. This solves the #1 enterprise AI trust problem through metadata engineering, not prompting.
+
+**Endpoints:** `POST /api/trust-trace` → queries ChromaDB with RBAC filter → returns structured citation objects with page metadata.
+
+---
+
+### 🧮 Page 2 — What-If Financial Calculator: True Agentic Action (`/whatif`)
+
+**The Problem:** Most chatbots only *read* past data. A true agentic system must be able to *act* — synthesizing new information from what it retrieves.
+
+**The Solution:** A financial projection engine with 3 distinct steps the user can inspect:
+1. **Agent fetches real data** — queries MySQL for the exact metric value (`SELECT ... FROM financials`)
+2. **Builds an expression** — constructs a mathematical formula (e.g., `391035000000 * (1 + 15/100)`)
+3. **AST-safe evaluation** — Python's AST parser evaluates the expression. No `eval()`, no `exec()`, no code injection possible
+4. **3-year projection chart** — renders a bar chart with growth/decline scenarios
+
+**Example Queries Supported:**
+- *"What would revenue look like if it grew 15% annually from 2024?"*
+- *"Bear case: R&D expense drops 8% from 2023 baseline"*
+- *"Project net income with 12% growth over 3 years"*
+
+**Why It Matters:** It demonstrates the difference between a retrieval chatbot and an **Agent that uses tools to synthesize new information** — exactly what the assignment brief asked for.
+
+**Endpoints:** `POST /api/whatif` → fetches metric from MySQL → applies AST calculator → returns 3-year projection.
+
+---
+
+### 🔐 Page 3 — Shadow Mode RBAC: Intelligent Access Request Workflow (`/access`)
+
+**The Problem:** A plain "Access Denied" message is unhelpful in an enterprise. Real organizations need audit trails and structured escalation flows.
+
+**The Solution:** An intelligent, multi-step workflow when restricted data is requested:
+1. **System detects** the restricted keyword pre-query (before the LLM sees it)
+2. **Agent responds gracefully** — provides the public alternative, explains *why* access is blocked and *which role* would grant it
+3. **One-click access request** — user submits a request with their role, query, and required classification
+4. **CEO Dashboard** — pending requests appear on the CEO's review panel with approve/deny controls and an optional review note
+5. **Persistent audit trail** — all requests saved to JSON with timestamps, status, and reviewer notes
+
+**Why It Matters:** This turns a dry RBAC requirement into a realistic, enterprise-grade workflow — showing you think about how security policies affect real users in a company, not just whether data is blocked or not.
+
+**Endpoints:** `GET/POST /api/access-request` for list and create; `PATCH /api/access-request/<id>` for CEO review.
+
+---
+
+
 
 ## 📈 Scaling to 100x & Solutions
 

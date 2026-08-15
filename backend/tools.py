@@ -85,9 +85,9 @@ def sql_tool(sql_query, user_role):
 # ==========================================
 # TOOL 2: RAG TOOL
 # ==========================================
-def rag_tool(search_query, user_role):
+def rag_tool(search_query, user_role, year=None):
     """
-    Queries ChromaDB vector collection using pre-retrieval metadata filter.
+    Queries ChromaDB vector collection using pre-retrieval metadata filter and optional year filter.
     """
     print(f"[Tool: RAG] Searching vector store for '{search_query}' (Role: '{user_role}')...")
     
@@ -103,10 +103,19 @@ def rag_tool(search_query, user_role):
         # Pre-retrieval metadata filter
         rbac_filter = get_rag_rbac_filter(user_role)
         
+        where_filter = rbac_filter
+        if year:
+            where_filter = {
+                "$and": [
+                    rbac_filter,
+                    {"source_file": f"apple_10k_{year}.pdf"}
+                ]
+            }
+        
         results = collection.query(
             query_embeddings=[query_vector],
             n_results=4,
-            where=rbac_filter
+            where=where_filter
         )
         
         chunks = []

@@ -27,6 +27,14 @@ from backend.feedback_loop import add_feedback, load_feedback
 from backend.ingestion import ingest_all_raw_files
 from backend.setup_mysql import setup_database
 from backend.understanding import run_understanding_pipeline
+from backend.novelties import (
+    trust_and_trace_search,
+    whatif_projection,
+    detect_restricted_data,
+    submit_access_request,
+    list_access_requests,
+    update_access_request,
+)
 
 # Initialize Flask app
 app = Flask(__name__, static_folder=os.path.join("..", "frontend"), static_url_path="")
@@ -78,6 +86,15 @@ def handle_feedback():
         logger.error(f"Error handling feedback: {str(e)}", exc_info=True)
         return jsonify({"error": str(e)}), 500
 
+@app.route('/api/feedback/list', methods=['GET'])
+def get_feedback_list():
+    try:
+        feedbacks = load_feedback()
+        return jsonify(feedbacks)
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
 @app.route('/api/status', methods=['GET'])
 def handle_status():
     raw_dir = os.path.join("data", "raw")
@@ -122,7 +139,8 @@ def handle_status():
             host=os.getenv("MYSQL_HOST", "localhost"),
             user=os.getenv("MYSQL_USER", "root"),
             password=os.getenv("MYSQL_PASSWORD", ""),
-            database=os.getenv("MYSQL_DATABASE", "finagent_db")
+            database=os.getenv("MYSQL_DATABASE", "finagent_db"),
+            connect_timeout=1
         )
         conn.close()
         mysql_connected = True
@@ -169,6 +187,80 @@ def trigger_ingest():
         
     threading.Thread(target=async_ingestion).start()
     return jsonify({"status": "running", "message": "Ingestion triggered in the background"})
+
+
+# ──────────────────────────────────────────────────────
+# FEATURE 1: TRUST & TRACE — Citation-level source lookup
+# ──────────────────────────────────────────────────────
+@app.route('/api/trust-trace', methods=['POST'])
+def handle_trust_trace():
+    data  = request.get_json() or {}
+    query = data.get("query", "").strip()
+    role  = data.get("role", "Analyst").strip()
+    if not query:
+        return jsonify({"error": "query is required"}), 400
+    try:
+        result = trust_and_trace_search(query, role)
+        return jsonify(result)
+    except Exception as e:
+        logger.error(f"Trust & Trace error: {e}", exc_info=True)
+        return jsonify({"error": str(e)}), 500
+
+
+# ──────────────────────────────────────────────────────
+# FEATURE 2: WHAT-IF CALCULATOR — Agentic projection engine
+# ──────────────────────────────────────────────────────
+@app.route('/api/whatif', methods=['POST'])
+def handle_whatif():
+    data       = request.get_json() or {}
+    metric     = data.get("metric", "").strip()
+    change_pct = data.get("change_pct", 0)
+    base_year  = data.get("base_year", "2024")
+    role       = data.get("role", "Analyst").strip()
+    if not metric:
+        return jsonify({"error": "metric is required"}), 400
+    try:
+        result = whatif_projection(metric, float(change_pct), str(base_year), role)
+        return jsonify(result)
+    except Exception as e:
+        logger.error(f"What-If error: {e}", exc_info=True)
+        return jsonify({"error": str(e)}), 500
+
+
+# ──────────────────────────────────────────────────────
+# FEATURE 3: SHADOW MODE RBAC — Access request workflow
+# ──────────────────────────────────────────────────────
+@app.route('/api/access-request', methods=['GET'])
+def get_access_requests():
+    role = request.args.get("role", "Analyst")
+    return jsonify(list_access_requests(role))
+
+@app.route('/api/access-request', methods=['POST'])
+def create_access_request():
+    data = request.get_json() or {}
+    try:
+        req = submit_access_request(
+            requester_role  = data.get("requester_role", "Analyst"),
+            requester_email = data.get("requester_email", ""),
+            data_label      = data.get("data_label", ""),
+            classification  = data.get("classification", ""),
+            required_role   = data.get("required_role", "CEO"),
+            original_query  = data.get("original_query", ""),
+        )
+        return jsonify(req), 201
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/api/access-request/<req_id>', methods=['PATCH'])
+def review_access_request(req_id):
+    data     = request.get_json() or {}
+    decision = data.get("decision", "")   # 'approve' or 'deny'
+    note     = data.get("note", "")
+    role     = data.get("reviewer_role", "Analyst")
+    result   = update_access_request(req_id, decision, note, role)
+    if "error" in result:
+        return jsonify(result), 403
+    return jsonify(result)
 
 if __name__ == "__main__":
     os.makedirs(os.path.join("data", "raw"), exist_ok=True)
